@@ -44,6 +44,8 @@ const TEAMDESK_CONFIG = {
   },
   // How TeamDesk expects dates. Options: "M/D/YYYY", "MM/DD/YYYY", "YYYY-MM-DD"
   dateFormat: "M/D/YYYY",
+  // Fixed year shown on the form. Change this once a year.
+  cashOutYear: 2026,
   hoursMin: 5,
   hoursMax: 80
 };
@@ -148,6 +150,8 @@ const TEAMDESK_CONFIG = {
   input[aria-invalid="true"] { border-color: var(--error); background: var(--error-bg); }
   .error { color: var(--error); font-size: .86rem; margin: .35rem 0 0; min-height: 1.2em; }
 
+  .year-line { margin: 0 0 1.25rem; }
+  .year-line strong { font: 700 1.25rem/1 "Source Serif 4", Georgia, serif; }
   .hours-block {
     display: grid; grid-template-columns: auto 1fr; gap: 1.25rem; align-items: start;
   }
@@ -227,12 +231,9 @@ const TEAMDESK_CONFIG = {
 
     <fieldset>
       <legend>Cash out</legend>
+      <p class="year-line">I would like to request the following cash out in Year: <strong id="yearText"></strong></p>
+      <input type="hidden" id="year">
       <div class="hours-block">
-        <div>
-          <label for="year">Year</label>
-          <input id="year" data-key="year" type="number" min="2000" max="2100" step="1" required style="width:8rem">
-          <p class="error" id="year-error"></p>
-        </div>
         <div>
           <label for="hours"># of hours</label>
           <input id="hours" data-key="hours" type="number" step="any" required aria-describedby="hours-hint hours-error">
@@ -315,7 +316,11 @@ const TEAMDESK_CONFIG = {
   document.getElementById("hours-hint").textContent =
     `Enter ${cfg.hoursMin} to ${cfg.hoursMax} hours.`;
   const today = new Date();
-  year.value = today.getFullYear();
+  document.getElementById("yearText").textContent = cfg.cashOutYear;
+  if (cfg.fields.year) {
+    year.name = cfg.fields.year;
+    year.value = cfg.cashOutYear;
+  }
   dateVisible.value = today.toISOString().slice(0, 10);
 
   // Signature preview
@@ -368,7 +373,6 @@ const TEAMDESK_CONFIG = {
       validateRequired(document.getElementById("name"), "name-error", "Name"),
       validateEmpId(),
       validateRequired(document.getElementById("department"), "department-error", "Department"),
-      validateRequired(year, "year-error", "Year"),
       validateHours(),
       validateRequired(sig, "signature-error", "Signature"),
       validateRequired(document.getElementById("printName"), "printName-error", "Print name"),
