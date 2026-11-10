@@ -28,15 +28,14 @@ const TEAMDESK_CONFIG = {
     year:       "",              // Year — no column yet; add a Number column, then put its name here
     hours:      "f_59202826",    // # or Hours         (Number)
     signature:  "f_59344366",    // Employee Signature (Text 73)
-    printName:  "f_59202828",    // Print Name         (Text 40)
+    printName:  "",              // Print Name — removed from the form per review (column f_59202828)
     date:       "f_59202829"     // Date               (Date)
   },
   // Matches the TeamDesk text column sizes so nothing gets cut off.
   maxLength: {
     name: 40,
     department: 40,
-    signature: 73,
-    printName: 40
+    signature: 73
   },
   // Where employees land after submitting. Swap in a thank-you page when you have one.
   hidden: {
@@ -100,20 +99,20 @@ const TEAMDESK_CONFIG = {
 
   header { text-align: center; margin-bottom: 2rem; }
   .org {
-    display: inline-flex; align-items: center; gap: .6rem;
-    font: 500 1.35rem/1.2 "Source Serif 4", Georgia, serif;
+    display: inline-flex; align-items: center; gap: .9rem;
+    font: 500 clamp(1.6rem, 5vw, 2.4rem)/1.2 "Source Serif 4", Georgia, serif;
     color: var(--ink);
   }
   .cross {
-    width: 2rem; height: 2rem; border-radius: 4px; background: var(--maroon);
+    width: clamp(2.6rem, 7vw, 3.4rem); height: clamp(2.6rem, 7vw, 3.4rem); border-radius: 6px; background: var(--maroon);
     position: relative; flex: none;
   }
   .cross::before, .cross::after {
     content: ""; position: absolute; background: var(--surface);
     left: 50%; top: 50%; transform: translate(-50%, -50%);
   }
-  .cross::before { width: 1.1rem; height: .34rem; }
-  .cross::after  { width: .34rem; height: 1.1rem; }
+  .cross::before { width: 62%; height: 20%; }
+  .cross::after  { width: 20%; height: 62%; }
   h1 {
     margin: 1rem 0 0;
     font: 700 clamp(1.6rem, 4vw, 2.1rem)/1.15 "Source Serif 4", Georgia, serif;
@@ -150,6 +149,11 @@ const TEAMDESK_CONFIG = {
   input[aria-invalid="true"] { border-color: var(--error); background: var(--error-bg); }
   .error { color: var(--error); font-size: .86rem; margin: .35rem 0 0; min-height: 1.2em; }
 
+  .cash-out { text-align: center; }
+  .cash-out legend { margin-left: auto; margin-right: auto; }
+  .cash-out .hours-block { display: flex; justify-content: center; }
+  .cash-out label { text-align: center; }
+  .cash-out .hours-block input { margin: 0 auto; display: block; }
   .year-line { margin: 0 0 1.25rem; }
   .year-line strong { font: 700 1.25rem/1 "Source Serif 4", Georgia, serif; }
   .hours-block {
@@ -185,7 +189,7 @@ const TEAMDESK_CONFIG = {
   }
   .sig-caption { font-size: .82rem; color: var(--muted); margin: .3rem 0 0; }
 
-  .actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .actions { display: flex; flex-direction: column; align-items: center; gap: .75rem; text-align: center; }
   button {
     font: 600 1rem/1 "Public Sans", system-ui, sans-serif;
     background: var(--maroon); color: #fff;
@@ -229,7 +233,7 @@ const TEAMDESK_CONFIG = {
       </div>
     </fieldset>
 
-    <fieldset>
+    <fieldset class="cash-out">
       <legend>Cash out</legend>
       <p class="year-line">I would like to request the following cash out in Year: <strong id="yearText"></strong></p>
       <input type="hidden" id="year">
@@ -263,10 +267,7 @@ const TEAMDESK_CONFIG = {
           <p class="error" id="signature-error"></p>
         </div>
         <div>
-          <label for="printName">Print name</label>
-          <input id="printName" data-key="printName" type="text" required>
-          <p class="error" id="printName-error"></p>
-          <label for="date" style="margin-top:.6rem">Date</label>
+          <label for="dateVisible">Date</label>
           <input id="dateVisible" type="date" required>
           <input id="date" data-key="date" type="hidden">
           <p class="error" id="date-error"></p>
@@ -375,7 +376,6 @@ const TEAMDESK_CONFIG = {
       validateRequired(document.getElementById("department"), "department-error", "Department"),
       validateHours(),
       validateRequired(sig, "signature-error", "Signature"),
-      validateRequired(document.getElementById("printName"), "printName-error", "Print name"),
       validateRequired(dateVisible, "date-error", "Date")
     ];
     const ok = checks.every(Boolean);
