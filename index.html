@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vacation Cash Out Request · Harlingen Medical Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,700&family=Public+Sans:wght@400;500;600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+
+<script>
+/* =====================================================================
+   TEAMDESK CONFIG — the only part you need to edit.
+   Copy these values from TeamDesk's "Generate Web-to-Record Form" output:
+     - formAction: the <form action="..."> URL
+     - fields:     the name="..." attribute of each input
+     - hidden:     any hidden inputs TeamDesk includes (copy name + value)
+   ===================================================================== */
+const TEAMDESK_CONFIG = {
+  formAction: "https://www.teamdesk.net/secure/db/YOUR_DB_ID/YOUR_FORM_URL",
+  fields: {
+    name:       "f_NAME",        // Name (Please Print)
+    empId:      "f_EMPID",       // Emp ID #
+    department: "f_DEPARTMENT",  // Department
+    year:       "f_YEAR",        // Cash out year
+    hours:      "f_HOURS",       // # of Hours
+    signature:  "f_SIGNATURE",   // Employee Signature (typed)
+    printName:  "f_PRINTNAME",   // Print Name
+    date:       "f_DATE"         // Date
+  },
+  hidden: {
+    // "returnUrl": "https://your-site.com/thank-you"
+  },
+  // How TeamDesk expects dates. Options: "M/D/YYYY", "MM/DD/YYYY", "YYYY-MM-DD"
+  dateFormat: "M/D/YYYY",
+  hoursMin: 5,
+  hoursMax: 80
+};
+</script>
+
+<style>
+  :root {
+    --maroon: #8a1c32;
+    --maroon-deep: #6b1426;
+    --ink: #1d2126;
+    --muted: #5b6470;
+    --line: #c8cdd4;
+    --surface: #ffffff;
+    --page: #eef0f3;
+    --field: #ffffff;
+    --error: #b42318;
+    --error-bg: #fdecea;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --maroon: #e0798d;
+      --maroon-deep: #f09aab;
+      --ink: #e8eaed;
+      --muted: #a3abb6;
+      --line: #3b424c;
+      --surface: #1b1f24;
+      --page: #121519;
+      --field: #22272e;
+      --error: #ff8a80;
+      --error-bg: #3a1d1d;
+      color-scheme: dark;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font: 400 1rem/1.55 "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+
+  .sheet {
+    max-width: 46rem;
+    margin: 2.5rem auto;
+    background: var(--surface);
+    border-top: 6px solid var(--maroon);
+    border-radius: 4px;
+    padding: 2.5rem clamp(1.25rem, 5vw, 3rem) 2.75rem;
+  }
+
+  header { text-align: center; margin-bottom: 2rem; }
+  .org {
+    display: inline-flex; align-items: center; gap: .6rem;
+    font: 500 1.35rem/1.2 "Source Serif 4", Georgia, serif;
+    color: var(--ink);
+  }
+  .cross {
+    width: 2rem; height: 2rem; border-radius: 4px; background: var(--maroon);
+    position: relative; flex: none;
+  }
+  .cross::before, .cross::after {
+    content: ""; position: absolute; background: var(--surface);
+    left: 50%; top: 50%; transform: translate(-50%, -50%);
+  }
+  .cross::before { width: 1.1rem; height: .34rem; }
+  .cross::after  { width: .34rem; height: 1.1rem; }
+  h1 {
+    margin: 1rem 0 0;
+    font: 700 clamp(1.6rem, 4vw, 2.1rem)/1.15 "Source Serif 4", Georgia, serif;
+    letter-spacing: -.01em;
+  }
+
+  fieldset { border: 0; padding: 0; margin: 0 0 2rem; }
+  legend {
+    font: 600 1.05rem/1.3 "Source Serif 4", Georgia, serif;
+    margin-bottom: .9rem; padding: 0;
+  }
+
+  .grid { display: grid; gap: 1rem 1.25rem; }
+  .grid.three { grid-template-columns: 2fr 1fr 1.4fr; }
+  .grid.two   { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 600px) {
+    .grid.three, .grid.two { grid-template-columns: 1fr; }
+  }
+
+  label { display: block; font-weight: 500; font-size: .92rem; margin-bottom: .35rem; }
+  input {
+    width: 100%;
+    font: inherit; color: var(--ink);
+    background: var(--field);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: .6rem .7rem;
+  }
+  input:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--maroon) 35%, transparent);
+    outline-offset: 1px;
+    border-color: var(--maroon);
+  }
+  input[aria-invalid="true"] { border-color: var(--error); background: var(--error-bg); }
+  .error { color: var(--error); font-size: .86rem; margin: .35rem 0 0; min-height: 1.2em; }
+
+  .hours-block {
+    display: grid; grid-template-columns: auto 1fr; gap: 1.25rem; align-items: start;
+  }
+  .hours-block input {
+    width: 8rem;
+    font: 700 1.6rem/1.2 "Source Serif 4", Georgia, serif;
+    text-align: center;
+  }
+  .hint { color: var(--muted); font-size: .86rem; margin: .35rem 0 0; }
+  @media (max-width: 600px) { .hours-block { grid-template-columns: 1fr; } }
+
+  .terms {
+    border-left: 3px solid var(--line);
+    padding: .25rem 0 .25rem 1.25rem;
+    margin: 0 0 2rem;
+    color: var(--ink);
+  }
+  .terms ol { margin: 0; padding-left: 1.2rem; }
+  .terms li { margin-bottom: .45rem; max-width: 68ch; }
+  .terms li:last-child { margin-bottom: 0; }
+  .terms em { color: var(--muted); }
+
+  .sig-preview {
+    margin-top: .5rem;
+    min-height: 3rem;
+    border-bottom: 1px solid var(--ink);
+    font: 600 2rem/1.4 "Dancing Script", "Brush Script MT", cursive;
+    color: var(--ink);
+    padding: 0 .25rem;
+    overflow-wrap: anywhere;
+  }
+  .sig-caption { font-size: .82rem; color: var(--muted); margin: .3rem 0 0; }
+
+  .actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  button {
+    font: 600 1rem/1 "Public Sans", system-ui, sans-serif;
+    background: var(--maroon); color: #fff;
+    border: 0; border-radius: 3px;
+    padding: .9rem 1.6rem; cursor: pointer;
+  }
+  @media (prefers-color-scheme: dark) { button { color: #1b1f24; } }
+  button:hover { background: var(--maroon-deep); }
+  button:focus-visible { outline: 3px solid color-mix(in srgb, var(--maroon) 40%, transparent); outline-offset: 2px; }
+  .form-error { color: var(--error); font-size: .92rem; margin: 0; }
+
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+<main class="sheet">
+  <header>
+    <div class="org"><span class="cross" aria-hidden="true"></span>Harlingen Medical Center</div>
+    <h1>Vacation cash out request</h1>
+  </header>
+
+  <form id="cashOutForm" method="post" novalidate>
+    <fieldset>
+      <legend>Employee</legend>
+      <div class="grid three">
+        <div>
+          <label for="name">Name (please print)</label>
+          <input id="name" data-key="name" type="text" autocomplete="name" required>
+          <p class="error" id="name-error"></p>
+        </div>
+        <div>
+          <label for="empId">Emp ID #</label>
+          <input id="empId" data-key="empId" type="text" inputmode="numeric" required>
+          <p class="error" id="empId-error"></p>
+        </div>
+        <div>
+          <label for="department">Department</label>
+          <input id="department" data-key="department" type="text" required>
+          <p class="error" id="department-error"></p>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Cash out</legend>
+      <div class="hours-block">
+        <div>
+          <label for="year">Year</label>
+          <input id="year" data-key="year" type="number" min="2000" max="2100" step="1" required style="width:8rem">
+          <p class="error" id="year-error"></p>
+        </div>
+        <div>
+          <label for="hours"># of hours</label>
+          <input id="hours" data-key="hours" type="number" step="any" required aria-describedby="hours-hint hours-error">
+          <p class="hint" id="hours-hint"></p>
+          <p class="error" id="hours-error" role="alert"></p>
+        </div>
+      </div>
+    </fieldset>
+
+    <section class="terms" aria-label="Terms">
+      <ol>
+        <li>All cash out request forms must be received by December 31st.</li>
+        <li>Employees will be allowed to “cash-out” vacation hours once per year, up to 80 hours <em>(min. of 5 hours for payout)</em>.</li>
+        <li>If an employee used the vacation hours slated to be cashed out, only those hours accrued, but unused, will be cashed out.</li>
+        <li>Once submitted, a cash-out election cannot be changed and is irrevocable.</li>
+        <li>By typing your name below, you acknowledge that it will serve as your electronic signature, indicating your agreement and consent to the terms of this form.</li>
+      </ol>
+    </section>
+
+    <fieldset>
+      <legend>Authorization</legend>
+      <div class="grid two">
+        <div>
+          <label for="signature">Employee signature (type your full name)</label>
+          <input id="signature" data-key="signature" type="text" required>
+          <div class="sig-preview" id="sigPreview" aria-hidden="true"></div>
+          <p class="error" id="signature-error"></p>
+        </div>
+        <div>
+          <label for="printName">Print name</label>
+          <input id="printName" data-key="printName" type="text" required>
+          <p class="error" id="printName-error"></p>
+          <label for="date" style="margin-top:.6rem">Date</label>
+          <input id="dateVisible" type="date" required>
+          <input id="date" data-key="date" type="hidden">
+          <p class="error" id="date-error"></p>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="actions">
+      <button type="submit">Submit request</button>
+      <p class="form-error" id="formError" role="alert"></p>
+    </div>
+  </form>
+</main>
+
+<script>
+(function () {
+  const cfg = TEAMDESK_CONFIG;
+  const form = document.getElementById("cashOutForm");
+
+  // Wire up TeamDesk action + field names from config
+  form.action = cfg.formAction;
+  form.querySelectorAll("[data-key]").forEach(el => {
+    const name = cfg.fields[el.dataset.key];
+    if (name) el.name = name;
+  });
+  Object.entries(cfg.hidden || {}).forEach(([n, v]) => {
+    const h = document.createElement("input");
+    h.type = "hidden"; h.name = n; h.value = v;
+    form.appendChild(h);
+  });
+
+  // Defaults
+  const hours = document.getElementById("hours");
+  const year = document.getElementById("year");
+  const dateVisible = document.getElementById("dateVisible");
+  const dateHidden = document.getElementById("date");
+  hours.min = cfg.hoursMin; hours.max = cfg.hoursMax;
+  document.getElementById("hours-hint").textContent =
+    `Enter ${cfg.hoursMin} to ${cfg.hoursMax} hours.`;
+  const today = new Date();
+  year.value = today.getFullYear();
+  dateVisible.value = today.toISOString().slice(0, 10);
+
+  // Signature preview
+  const sig = document.getElementById("signature");
+  const preview = document.getElementById("sigPreview");
+  sig.addEventListener("input", () => { preview.textContent = sig.value; });
+
+  // Helpers
+  function setError(input, id, msg) {
+    document.getElementById(id).textContent = msg;
+    input.setAttribute("aria-invalid", msg ? "true" : "false");
+    return !msg;
+  }
+  function validateHours() {
+    const raw = hours.value.trim();
+    const n = Number(raw);
+    let msg = "";
+    if (raw === "" || Number.isNaN(n)) msg = "Enter the number of hours to cash out.";
+    else if (n < cfg.hoursMin || n > cfg.hoursMax)
+      msg = `Hours must be between ${cfg.hoursMin} and ${cfg.hoursMax}. You entered ${raw}.`;
+    return setError(hours, "hours-error", msg);
+  }
+  function validateRequired(input, errId, label) {
+    return setError(input, errId, input.value.trim() ? "" : `${label} is required.`);
+  }
+  function formatDate(iso) {
+    const [y, m, d] = iso.split("-");
+    switch (cfg.dateFormat) {
+      case "MM/DD/YYYY": return `${m}/${d}/${y}`;
+      case "YYYY-MM-DD": return iso;
+      default: return `${+m}/${+d}/${y}`;
+    }
+  }
+
+  hours.addEventListener("input", validateHours);
+  hours.addEventListener("blur", validateHours);
+
+  form.addEventListener("submit", e => {
+    const checks = [
+      validateRequired(document.getElementById("name"), "name-error", "Name"),
+      validateRequired(document.getElementById("empId"), "empId-error", "Emp ID #"),
+      validateRequired(document.getElementById("department"), "department-error", "Department"),
+      validateRequired(year, "year-error", "Year"),
+      validateHours(),
+      validateRequired(sig, "signature-error", "Signature"),
+      validateRequired(document.getElementById("printName"), "printName-error", "Print name"),
+      validateRequired(dateVisible, "date-error", "Date")
+    ];
+    const ok = checks.every(Boolean);
+    document.getElementById("formError").textContent =
+      ok ? "" : "Fix the highlighted fields, then submit again.";
+    if (!ok) {
+      e.preventDefault();
+      const first = form.querySelector('[aria-invalid="true"]');
+      if (first) first.focus();
+      return;
+    }
+    dateHidden.value = formatDate(dateVisible.value);
+  });
+})();
+</script>
+</body>
+</html>
