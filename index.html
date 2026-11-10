@@ -17,19 +17,30 @@
      - hidden:     any hidden inputs TeamDesk includes (copy name + value)
    ===================================================================== */
 const TEAMDESK_CONFIG = {
-  formAction: "https://www.teamdesk.net/secure/db/YOUR_DB_ID/YOUR_FORM_URL",
+  formAction: "https://truebooks.teamdesk.net/secure/gateway.aspx?action=WebToRecord&app=93348&table=1430348",
+  // Left side = form field, right side = TeamDesk input name.
+  // Comments show the matching VACATIONS column.
+  // Set a field to "" to hide it and leave it out of the submission.
   fields: {
-    name:       "f_NAME",        // Name (Please Print)
-    empId:      "f_EMPID",       // Emp ID #
-    department: "f_DEPARTMENT",  // Department
-    year:       "f_YEAR",        // Cash out year
-    hours:      "f_HOURS",       // # of Hours
-    signature:  "f_SIGNATURE",   // Employee Signature (typed)
-    printName:  "f_PRINTNAME",   // Print Name
-    date:       "f_DATE"         // Date
+    name:       "f_59203025",    // Name               (Text 40)
+    empId:      "f_59203026",    // Emp ID #           (Number)
+    department: "f_59203027",    // Department         (Text 40)
+    year:       "",              // Year — no column yet; add a Number column, then put its name here
+    hours:      "f_59202826",    // # or Hours         (Number)
+    signature:  "f_59344366",    // Employee Signature (Text 73)
+    printName:  "f_59202828",    // Print Name         (Text 40)
+    date:       "f_59202829"     // Date               (Date)
   },
+  // Matches the TeamDesk text column sizes so nothing gets cut off.
+  maxLength: {
+    name: 40,
+    department: 40,
+    signature: 73,
+    printName: 40
+  },
+  // Where employees land after submitting. Swap in a thank-you page when you have one.
   hidden: {
-    // "returnUrl": "https://your-site.com/thank-you"
+    retURL: "https://truebooks.teamdesk.net"
   },
   // How TeamDesk expects dates. Options: "M/D/YYYY", "MM/DD/YYYY", "YYYY-MM-DD"
   dateFormat: "M/D/YYYY",
@@ -277,8 +288,17 @@ const TEAMDESK_CONFIG = {
   // Wire up TeamDesk action + field names from config
   form.action = cfg.formAction;
   form.querySelectorAll("[data-key]").forEach(el => {
-    const name = cfg.fields[el.dataset.key];
-    if (name) el.name = name;
+    const key = el.dataset.key;
+    const name = cfg.fields[key];
+    if (name) {
+      el.name = name;
+    } else if (key !== "date") {
+      // No TeamDesk column mapped: hide the field and skip its validation
+      el.disabled = true;
+      const wrap = el.closest("div");
+      if (wrap) wrap.hidden = true;
+    }
+    if (cfg.maxLength && cfg.maxLength[key]) el.maxLength = cfg.maxLength[key];
   });
   Object.entries(cfg.hidden || {}).forEach(([n, v]) => {
     const h = document.createElement("input");
@@ -319,8 +339,18 @@ const TEAMDESK_CONFIG = {
     return setError(hours, "hours-error", msg);
   }
   function validateRequired(input, errId, label) {
+    if (input.disabled) return true;
     return setError(input, errId, input.value.trim() ? "" : `${label} is required.`);
   }
+  const empId = document.getElementById("empId");
+  function validateEmpId() {
+    const v = empId.value.trim();
+    let msg = "";
+    if (!v) msg = "Emp ID # is required.";
+    else if (!/^\d+$/.test(v)) msg = "Emp ID # can only contain numbers.";
+    return setError(empId, "empId-error", msg);
+  }
+  empId.addEventListener("blur", validateEmpId);
   function formatDate(iso) {
     const [y, m, d] = iso.split("-");
     switch (cfg.dateFormat) {
@@ -336,7 +366,7 @@ const TEAMDESK_CONFIG = {
   form.addEventListener("submit", e => {
     const checks = [
       validateRequired(document.getElementById("name"), "name-error", "Name"),
-      validateRequired(document.getElementById("empId"), "empId-error", "Emp ID #"),
+      validateEmpId(),
       validateRequired(document.getElementById("department"), "department-error", "Department"),
       validateRequired(year, "year-error", "Year"),
       validateHours(),
