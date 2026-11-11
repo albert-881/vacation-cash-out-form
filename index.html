@@ -178,16 +178,15 @@ const TEAMDESK_CONFIG = {
   .terms li:last-child { margin-bottom: 0; }
   .terms em { color: var(--muted); }
 
-  .sig-preview {
-    margin-top: .5rem;
-    min-height: 3rem;
-    border-bottom: 1px solid var(--ink);
-    font: 600 2rem/1.4 "Dancing Script", "Brush Script MT", cursive;
-    color: var(--ink);
-    padding: 0 .25rem;
-    overflow-wrap: anywhere;
+  /* Signature box: what you type shows in cursive right away */
+  #signature {
+    font: 600 1.75rem/1.2 "Dancing Script", "Brush Script MT", cursive;
+    padding: .35rem .7rem;
   }
-  .sig-caption { font-size: .82rem; color: var(--muted); margin: .3rem 0 0; }
+  #signature::placeholder {
+    font: 400 1rem/1.2 "Public Sans", system-ui, sans-serif;
+    color: var(--muted);
+  }
 
   .actions { display: flex; flex-direction: column; align-items: center; gap: .75rem; text-align: center; }
   button {
@@ -262,8 +261,7 @@ const TEAMDESK_CONFIG = {
       <div class="grid two">
         <div>
           <label for="signature">Employee signature (type your full name)</label>
-          <input id="signature" data-key="signature" type="text" required>
-          <div class="sig-preview" id="sigPreview" aria-hidden="true"></div>
+          <input id="signature" data-key="signature" type="text" placeholder="Type your full name" autocomplete="off" required>
           <p class="error" id="signature-error"></p>
         </div>
         <div>
@@ -324,10 +322,7 @@ const TEAMDESK_CONFIG = {
   }
   dateVisible.value = today.toISOString().slice(0, 10);
 
-  // Signature preview
   const sig = document.getElementById("signature");
-  const preview = document.getElementById("sigPreview");
-  sig.addEventListener("input", () => { preview.textContent = sig.value; });
 
   // Helpers
   function setError(input, id, msg) {
